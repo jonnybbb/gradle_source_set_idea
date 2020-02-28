@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+
+def generatedResources = "$buildDir/generated-resources/main"
+
+sourceSets {
+    main {
+        //let's register an output folder on the main SourceSet:
+        output.dir(generatedResources, builtBy: 'generateMyResources')
+        //it is now a part of the 'main' classpath and will be a part of the jar
+    }
+}
+
+//a task that generates the resources:
+task generateMyResources {
+    outputs.dir generatedResources
+    doLast {
+        def generated = new File(generatedResources, "myGeneratedResource.properties")
+        generated.text = "message=Stay happy!"
+    }
+}
+
+//Java plugin task 'classes' and 'testClasses' will automatically depend on relevant tasks registered with 'builtBy'
+
+//Eclipse/IDEA plugins will automatically depend on 'generateMyResources'
+//because the output dir was registered with 'builtBy' information
+apply plugin: 'idea'; apply plugin: 'eclipse'
